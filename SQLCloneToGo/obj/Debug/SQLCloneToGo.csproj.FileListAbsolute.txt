@@ -7,3 +7,12 @@ D:\Projects\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.csproj.GenerateReso
 D:\Projects\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.exe
 D:\Projects\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.pdb
 D:\Projects\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.csprojAssemblyReference.cache
+D:\Projects\SQLCloneToGo\SQLCloneToGo\SQLCloneToGo\bin\Debug\SQLCloneToGo.exe.config
+D:\Projects\SQLCloneToGo\SQLCloneToGo\SQLCloneToGo\bin\Debug\SQLCloneToGo.exe
+D:\Projects\SQLCloneToGo\SQLCloneToGo\SQLCloneToGo\bin\Debug\SQLCloneToGo.pdb
+D:\Projects\SQLCloneToGo\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.csprojAssemblyReference.cache
+D:\Projects\SQLCloneToGo\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.frmClone.resources
+D:\Projects\SQLCloneToGo\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.Properties.Resources.resources
+D:\Projects\SQLCloneToGo\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.csproj.GenerateResource.cache
+D:\Projects\SQLCloneToGo\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.exe
+D:\Projects\SQLCloneToGo\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.pdb

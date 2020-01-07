@@ -8,5 +8,11 @@
     <Setting Name="TargetDBName" Type="System.String" Scope="User">
       <Value Profile="(Default)">zomorod722-1</Value>
     </Setting>
+    <Setting Name="SrcServername" Type="System.String" Scope="User">
+      <Value Profile="(Default)">.\ZOMOROD</Value>
+    </Setting>
+    <Setting Name="TargetServerName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">.\ZOMOROD</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

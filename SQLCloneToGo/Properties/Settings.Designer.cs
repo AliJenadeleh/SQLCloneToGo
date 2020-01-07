@@ -46,5 +46,29 @@ namespace SQLCloneToGo.Properties {
                 this["TargetDBName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(".\\ZOMOROD")]
+        public string SrcServername {
+            get {
+                return ((string)(this["SrcServername"]));
+            }
+            set {
+                this["SrcServername"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(".\\ZOMOROD")]
+        public string TargetServerName {
+            get {
+                return ((string)(this["TargetServerName"]));
+            }
+            set {
+                this["TargetServerName"] = value;
+            }
+        }
     }
 }

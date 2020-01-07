@@ -13,14 +13,20 @@ namespace SQLCloneToGo
 {
     public partial class frmClone : Form
     {
+        private const string VERSION = "0.1";
         private const string AJLINK = "https://alijenadeleh.ir";
+        private const string SUCCESSTEMPLATE = "Success : {0} ";
+        private const string FAILTEMPLATE = "Failed : {0} ";
         private const string SCRIPTALLDATA = "select * from [{0}]";
         private const string SCRIPTCLEARTABLE = "delete from [{0}]";
-        private const string STRINGCONNECTIONTEMPLATE = @"Data Source=.\ZOMOROD;Initial Catalog={0};Integrated Security=True;";
+        private const string STRINGCONNECTIONTEMPLATE = @"Data Source={0};Initial Catalog={1};Integrated Security=True;";
         private const string SCRIPTTABLELIST = @"SELECT TABLE_NAME 
 FROM [{0}].INFORMATION_SCHEMA.TABLES 
 WHERE TABLE_TYPE = 'BASE TABLE'";
+        
         private DataTable SourceTables;
+        private List<int> ErrorIndex;
+
         
         /// <summary>
         /// check the inputs values
@@ -39,8 +45,17 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
             {
                 Message = "Target database name required .";
                 result = false;
-            }else
-            if (txtSrcDB.Text == txtTargetDB.Text)
+            }
+            else if(string.IsNullOrEmpty(txtServerSrc.Text))
+            {
+                Message = "Source server name required .";
+                result = false;
+            }else if (string.IsNullOrEmpty(txtServerTarget.Text))
+            {
+                Message = "Target server name required .";
+                result = false;
+            }
+            else if (txtSrcDB.Text == txtTargetDB.Text)
             {
                 Message = "Source database name and target database name can`t be the same .";
                 result = false;
@@ -67,6 +82,8 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
         private void ClearOutput()
         {
             listOutput.Items.Clear();
+            progressMain.Value = 0;
+            ErrorIndex = new List<int>();
         }
 
         /// <summary>
@@ -74,8 +91,8 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
         /// </summary>
         private void ReLoadConnectionString()
         {
-            txtSource.Text = string.Format(STRINGCONNECTIONTEMPLATE, txtSrcDB.Text);
-            txtTarget.Text = string.Format(STRINGCONNECTIONTEMPLATE, txtTargetDB.Text);
+            txtSource.Text = string.Format(STRINGCONNECTIONTEMPLATE,txtServerSrc.Text, txtSrcDB.Text);
+            txtTarget.Text = string.Format(STRINGCONNECTIONTEMPLATE,txtServerTarget.Text, txtTargetDB.Text);
         }
 
         /// <summary>
@@ -133,6 +150,7 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
         /// <param name="CnnTarget">Target Connection Object</param>
         public void CopyTo(string[] Tables,SqlConnection CnnSrc,SqlConnection CnnTarget)
         {
+            int Success = 0, Fail = 0,RowCount = 0,CIndex = -1;
             var insScript = new StringBuilder();
             DataTable tblSrc = new DataTable();
             SqlDataAdapter datSrc = new SqlDataAdapter();
@@ -142,6 +160,8 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
 
             foreach(string tableName in Tables)
             {
+               
+
                 listOutput.Items.Add($"{tableName} copy start.");
                 cmdSrc.CommandText = string.Format(SCRIPTALLDATA, tableName);
                 datSrc.SelectCommand = cmdSrc;
@@ -156,27 +176,50 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
                     {
 
                         string columns = GetColumnName(tblSrc);
+                        float inc = columns.Count() / 100;
+                        float prog = 0f;
+                        RowCount = 0;
+                        
 
                         foreach (DataRow row in tblSrc.Rows)
                         {
                             cmdTarget.CommandText = $" insert into {tableName}({columns}) select {RowToString(row)} ";
                             cmdTarget.ExecuteNonQuery();
+                            prog += inc;
+                            progressMain.ProgressBar.Value = (int)prog;
+                            RowCount++;
                         }
-
+                        Success++;
                     }
-                    listOutput.Items.Add($"{tableName} copy done.");
+                    listOutput.Items.Add($"{tableName} {RowCount} rows copied done.");
                 }catch(Exception ex)
                 {
-                    listOutput.Items.Add($"{tableName} copy failed.");
+                    CIndex = listOutput.Items.Add($"{tableName} copy failed.");
                     listOutput.Items.Add(ex.Message);
+                    Fail++;
+                    if (CIndex != -1)
+                        ErrorIndex.Add(CIndex);
                 }
             }
 
+            if (CnnSrc.State != ConnectionState.Closed)
+                CnnSrc.Close();
+
+            if (CnnTarget.State != ConnectionState.Closed)
+                CnnTarget.Close();
+
+            lblFail.Text = string.Format(FAILTEMPLATE, Fail);
+            lblSuccess.Text = string.Format(SUCCESSTEMPLATE, Success);
             // check if the src is not empty
             // clear target
             // copy to target            
         }
 
+        /// <summary>
+        /// Convert DataTable columns to a SQL like string
+        /// </summary>
+        /// <param name="dataTable">Source Data Table</param>
+        /// <returns>string</returns>
         private string GetColumnName(DataTable dataTable)
         {
             bool test = false;
@@ -194,8 +237,6 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
                     test = true;
                 }
 
-
-
             }
 
             return res.ToString();
@@ -205,7 +246,7 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
         /// Convert an DataRow Object to SQL like string
         /// </summary>
         /// <param name="row"></param>
-        /// <returns></returns>
+        /// <returns>string</returns>
         private string RowToString(DataRow row)
         {
             bool test = false;
@@ -240,6 +281,10 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
         public frmClone()
         {
             InitializeComponent();
+            
+            ErrorIndex = new List<int>();
+
+            lblVersion.Text = $"Version : {VERSION}";
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -252,7 +297,11 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
             (sender as Button).Enabled = false;
             txtSrcDB.Enabled = false;
             txtTargetDB.Enabled = false;
+            txtServerSrc.Enabled = false;
+            txtServerTarget.Enabled = false;
+
             ClearOutput();
+            listOutput.Items.Add($"Copy start {DateTime.Now.ToString()}");
             if (IsValidate())
             {
                 var cnnsrc = await GetConnectionAsync(txtSource.Text);
@@ -276,15 +325,20 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
                 // done
             }
 
+            int inx = listOutput.Items.Add($"Copy done {DateTime.Now.ToString()}");
+            
             (sender as Button).Enabled = true;
             txtSrcDB.Enabled = true;
             txtTargetDB.Enabled = true;
+            txtServerSrc.Enabled = true;
+            txtServerTarget.Enabled = true;
         }
 
         private void btnClear_Click(object sender, EventArgs e)
         {
             ClearInputs();
             ClearOutput();
+            ErrorIndex.Clear();
         }
 
         private void txtSrcDB_TextChanged(object sender, EventArgs e)
@@ -304,6 +358,8 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
             {
                 p.SrcDBName = txtSrcDB.Text;
                 p.TargetDBName = txtTargetDB.Text;
+                p.SrcServername = txtServerSrc.Text;
+                p.TargetServerName = txtServerTarget.Text;
                 p.Save();
             }
             catch { }
@@ -316,6 +372,8 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
             {
                 txtSrcDB.Text = p.SrcDBName;
                 txtTargetDB.Text = p.TargetDBName;
+                txtServerSrc.Text = p.SrcServername;
+                txtServerTarget.Text = p.TargetServerName;
                 ReLoadConnectionString();
             }
             catch { }
@@ -324,6 +382,38 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
         private void linkMain_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start(AJLINK);
+        }
+
+        private void txtServerSrc_TextChanged(object sender, EventArgs e)
+        {
+            ReLoadConnectionString();
+        }
+
+        private void txtServerTarget_TextChanged(object sender, EventArgs e)
+        {
+            ReLoadConnectionString();
+        }
+
+        private void listOutput_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if(e.Index  >= 0 && ErrorIndex != null && ErrorIndex.Count > 0 && ErrorIndex.IndexOf(e.Index) != -1)
+            {
+                e = new DrawItemEventArgs(e.Graphics,
+                                  e.Font,
+                                  e.Bounds,
+                                  e.Index,
+                                  e.State ,// ^ DrawItemState.Selected,
+                                  e.ForeColor,
+                                  Color.Yellow);//Choose the color
+
+
+            }
+
+            e.DrawBackground();
+            // Draw the current item text
+            e.Graphics.DrawString(listOutput.Items[e.Index].ToString(), e.Font, Brushes.Black, e.Bounds, StringFormat.GenericDefault);
+            // If the ListBox has focus, draw a focus rectangle around the selected item.
+            e.DrawFocusRectangle();
         }
     }
 }

@@ -43,7 +43,14 @@
             this.txtTargetDB = new System.Windows.Forms.TextBox();
             this.linkMain = new System.Windows.Forms.LinkLabel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.progressMain = new System.Windows.Forms.ToolStripProgressBar();
+            this.lblFail = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblSuccess = new System.Windows.Forms.ToolStripStatusLabel();
+            this.txtServerSrc = new System.Windows.Forms.TextBox();
+            this.txtServerTarget = new System.Windows.Forms.TextBox();
+            this.lblVersion = new System.Windows.Forms.ToolStripStatusLabel();
             this.panel1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -69,7 +76,7 @@
             this.txtSource.Location = new System.Drawing.Point(62, 5);
             this.txtSource.Name = "txtSource";
             this.txtSource.ReadOnly = true;
-            this.txtSource.Size = new System.Drawing.Size(524, 20);
+            this.txtSource.Size = new System.Drawing.Size(340, 20);
             this.txtSource.TabIndex = 2;
             this.txtSource.Text = "Data Source=.\\ZOMOROD;Initial Catalog=zomorod722-1;Integrated Security=True;";
             this.txtSource.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -79,7 +86,7 @@
             this.txtTarget.Location = new System.Drawing.Point(62, 31);
             this.txtTarget.Name = "txtTarget";
             this.txtTarget.ReadOnly = true;
-            this.txtTarget.Size = new System.Drawing.Size(524, 20);
+            this.txtTarget.Size = new System.Drawing.Size(340, 20);
             this.txtTarget.TabIndex = 3;
             this.txtTarget.Text = "Data Source=.\\ZOMOROD;Initial Catalog=zomorod722-1;Integrated Security=True;";
             this.txtTarget.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -95,11 +102,14 @@
             // 
             // listOutput
             // 
+            this.listOutput.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.listOutput.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listOutput.FormattingEnabled = true;
             this.listOutput.Location = new System.Drawing.Point(62, 57);
             this.listOutput.Name = "listOutput";
             this.listOutput.Size = new System.Drawing.Size(708, 329);
             this.listOutput.TabIndex = 2;
+            this.listOutput.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listOutput_DrawItem);
             // 
             // panel1
             // 
@@ -113,6 +123,7 @@
             // 
             // btnClose
             // 
+            this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnClose.Location = new System.Drawing.Point(6, 3);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(117, 72);
@@ -123,6 +134,7 @@
             // 
             // btnClear
             // 
+            this.btnClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnClear.Location = new System.Drawing.Point(461, 3);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(117, 72);
@@ -133,6 +145,7 @@
             // 
             // btnGo
             // 
+            this.btnGo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnGo.Location = new System.Drawing.Point(597, 3);
             this.btnGo.Name = "btnGo";
             this.btnGo.Size = new System.Drawing.Size(117, 72);
@@ -165,7 +178,7 @@
             // 
             this.linkMain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkMain.AutoSize = true;
-            this.linkMain.Location = new System.Drawing.Point(3, 482);
+            this.linkMain.Location = new System.Drawing.Point(354, 483);
             this.linkMain.Name = "linkMain";
             this.linkMain.Size = new System.Drawing.Size(67, 13);
             this.linkMain.TabIndex = 5;
@@ -175,17 +188,70 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.progressMain,
+            this.lblFail,
+            this.lblSuccess,
+            this.lblVersion});
             this.statusStrip1.Location = new System.Drawing.Point(0, 477);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(775, 22);
             this.statusStrip1.TabIndex = 6;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // progressMain
+            // 
+            this.progressMain.Name = "progressMain";
+            this.progressMain.Size = new System.Drawing.Size(100, 16);
+            // 
+            // lblFail
+            // 
+            this.lblFail.ForeColor = System.Drawing.Color.Red;
+            this.lblFail.Name = "lblFail";
+            this.lblFail.Size = new System.Drawing.Size(40, 17);
+            this.lblFail.Text = "Fail : 0";
+            // 
+            // lblSuccess
+            // 
+            this.lblSuccess.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+            this.lblSuccess.Name = "lblSuccess";
+            this.lblSuccess.Size = new System.Drawing.Size(63, 17);
+            this.lblSuccess.Text = "Success : 0";
+            // 
+            // txtServerSrc
+            // 
+            this.txtServerSrc.Location = new System.Drawing.Point(408, 5);
+            this.txtServerSrc.Name = "txtServerSrc";
+            this.txtServerSrc.Size = new System.Drawing.Size(178, 20);
+            this.txtServerSrc.TabIndex = 7;
+            this.txtServerSrc.Text = "ZOMOROD";
+            this.txtServerSrc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtServerSrc.TextChanged += new System.EventHandler(this.txtServerSrc_TextChanged);
+            // 
+            // txtServerTarget
+            // 
+            this.txtServerTarget.Location = new System.Drawing.Point(408, 31);
+            this.txtServerTarget.Name = "txtServerTarget";
+            this.txtServerTarget.Size = new System.Drawing.Size(178, 20);
+            this.txtServerTarget.TabIndex = 8;
+            this.txtServerTarget.Text = "ZOMOROD";
+            this.txtServerTarget.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtServerTarget.TextChanged += new System.EventHandler(this.txtServerTarget_TextChanged);
+            // 
+            // lblVersion
+            // 
+            this.lblVersion.ForeColor = System.Drawing.Color.Olive;
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.Size = new System.Drawing.Size(69, 17);
+            this.lblVersion.Text = "Version : 0.1";
+            // 
             // frmClone
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(775, 499);
+            this.Controls.Add(this.txtServerTarget);
+            this.Controls.Add(this.txtServerSrc);
             this.Controls.Add(this.linkMain);
             this.Controls.Add(this.txtTargetDB);
             this.Controls.Add(this.txtSrcDB);
@@ -207,6 +273,8 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmClone_FormClosing);
             this.Load += new System.EventHandler(this.frmClone_Load);
             this.panel1.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,6 +296,12 @@
         private System.Windows.Forms.TextBox txtTargetDB;
         private System.Windows.Forms.LinkLabel linkMain;
         private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripProgressBar progressMain;
+        private System.Windows.Forms.ToolStripStatusLabel lblFail;
+        private System.Windows.Forms.ToolStripStatusLabel lblSuccess;
+        private System.Windows.Forms.TextBox txtServerSrc;
+        private System.Windows.Forms.TextBox txtServerTarget;
+        private System.Windows.Forms.ToolStripStatusLabel lblVersion;
     }
 }
 
