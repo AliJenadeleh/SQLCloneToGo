@@ -456,6 +456,10 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
                     // make backup file
                     // saveit
                 }
+                else
+                {
+                    MessageBox.Show("Database could't be found !");
+                }
             }
         }
     }

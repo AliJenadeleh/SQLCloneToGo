@@ -36,9 +36,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.listOutput = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnClose = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
-            this.btnGo = new System.Windows.Forms.Button();
             this.txtSrcDB = new System.Windows.Forms.TextBox();
             this.txtTargetDB = new System.Windows.Forms.TextBox();
             this.linkMain = new System.Windows.Forms.LinkLabel();
@@ -50,6 +47,9 @@
             this.txtServerSrc = new System.Windows.Forms.TextBox();
             this.txtServerTarget = new System.Windows.Forms.TextBox();
             this.btnBackup = new System.Windows.Forms.Button();
+            this.btnClose = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.btnGo = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -122,46 +122,6 @@
             this.panel1.Size = new System.Drawing.Size(725, 78);
             this.panel1.TabIndex = 3;
             // 
-            // btnClose
-            // 
-            this.btnClose.BackgroundImage = global::SQLCloneToGo.Properties.Resources.logout;
-            this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClose.Location = new System.Drawing.Point(6, 3);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(117, 72);
-            this.btnClose.TabIndex = 2;
-            this.btnClose.Text = "&Close";
-            this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-            // 
-            // btnClear
-            // 
-            this.btnClear.BackgroundImage = global::SQLCloneToGo.Properties.Resources.browser_2;
-            this.btnClear.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClear.Location = new System.Drawing.Point(461, 3);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(117, 72);
-            this.btnClear.TabIndex = 2;
-            this.btnClear.Text = "Cle&ar";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-            // 
-            // btnGo
-            // 
-            this.btnGo.BackgroundImage = global::SQLCloneToGo.Properties.Resources.technology;
-            this.btnGo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnGo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnGo.Location = new System.Drawing.Point(597, 3);
-            this.btnGo.Name = "btnGo";
-            this.btnGo.Size = new System.Drawing.Size(117, 72);
-            this.btnGo.TabIndex = 1;
-            this.btnGo.Text = "&Go";
-            this.btnGo.UseVisualStyleBackColor = true;
-            this.btnGo.Click += new System.EventHandler(this.btnGo_Click);
-            // 
             // txtSrcDB
             // 
             this.txtSrcDB.Location = new System.Drawing.Point(592, 5);
@@ -209,6 +169,7 @@
             // 
             // progressMain
             // 
+            this.progressMain.Margin = new System.Windows.Forms.Padding(62, 3, 1, 3);
             this.progressMain.Name = "progressMain";
             this.progressMain.Size = new System.Drawing.Size(100, 16);
             // 
@@ -265,6 +226,46 @@
             this.btnBackup.Text = "...";
             this.btnBackup.UseVisualStyleBackColor = true;
             this.btnBackup.Click += new System.EventHandler(this.btnBackup_Click);
+            // 
+            // btnClose
+            // 
+            this.btnClose.BackgroundImage = global::SQLCloneToGo.Properties.Resources.logout;
+            this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClose.Location = new System.Drawing.Point(6, 3);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(117, 72);
+            this.btnClose.TabIndex = 2;
+            this.btnClose.Text = "&Close";
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            // 
+            // btnClear
+            // 
+            this.btnClear.BackgroundImage = global::SQLCloneToGo.Properties.Resources.browser_2;
+            this.btnClear.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClear.Location = new System.Drawing.Point(461, 3);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(117, 72);
+            this.btnClear.TabIndex = 2;
+            this.btnClear.Text = "Cle&ar";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // btnGo
+            // 
+            this.btnGo.BackgroundImage = global::SQLCloneToGo.Properties.Resources.technology;
+            this.btnGo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnGo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnGo.Location = new System.Drawing.Point(597, 3);
+            this.btnGo.Name = "btnGo";
+            this.btnGo.Size = new System.Drawing.Size(117, 72);
+            this.btnGo.TabIndex = 1;
+            this.btnGo.Text = "&Go";
+            this.btnGo.UseVisualStyleBackColor = true;
+            this.btnGo.Click += new System.EventHandler(this.btnGo_Click);
             // 
             // frmClone
             // 
