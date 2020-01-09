@@ -19,6 +19,15 @@ namespace SQLCloneToGo
         private const string FAILTEMPLATE = "Failed : {0} ";
         private const string SCRIPTALLDATA = "select * from [{0}]";
         private const string SCRIPTCLEARTABLE = "delete from [{0}]";
+        private const string BACKUPTEMPLATE =
+@"USE [{0}];
+
+BACKUP DATABASE [{0}]
+TO DISK = '{1}'
+   WITH FORMAT,
+      MEDIANAME = 'SQLServerBackups',
+      NAME = 'Full Backup of [{0}]';";
+
         private const string STRINGCONNECTIONTEMPLATE = @"Data Source={0};Initial Catalog={1};Integrated Security=True;";
         private const string SCRIPTTABLELIST = @"SELECT TABLE_NAME 
 FROM [{0}].INFORMATION_SCHEMA.TABLES 
@@ -414,6 +423,40 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
             e.Graphics.DrawString(listOutput.Items[e.Index].ToString(), e.Font, Brushes.Black, e.Bounds, StringFormat.GenericDefault);
             // If the ListBox has focus, draw a focus rectangle around the selected item.
             e.DrawFocusRectangle();
+        }
+
+        private async void btnBackup_Click(object sender, EventArgs e)
+        {
+            var dlg = new SaveFileDialog();
+            
+            dlg.FileName = $"{txtTargetDB.Text}.bak";
+            dlg.Filter = "Backup Files | *.bak";
+            dlg.Title = "Select backup file location";
+            if(dlg.ShowDialog() == DialogResult.OK)
+            {
+                string path = dlg.FileName;
+                var cnn = await GetConnectionAsync(txtTarget.Text);
+                if (cnn != null)
+                {
+                    try
+                    {
+                        var cmd = new SqlCommand(string.Format(BACKUPTEMPLATE, txtTargetDB.Text, path), cnn);
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Backup file created successfuly");
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show("Exception happend. " + ex.Message);
+                    }
+                    finally
+                    {
+                        if(cnn.State != ConnectionState.Closed)
+                            cnn.Close();
+                    }
+                    // make backup file
+                    // saveit
+                }
+            }
         }
     }
 }

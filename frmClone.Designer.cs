@@ -46,9 +46,10 @@
             this.progressMain = new System.Windows.Forms.ToolStripProgressBar();
             this.lblFail = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblSuccess = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblVersion = new System.Windows.Forms.ToolStripStatusLabel();
             this.txtServerSrc = new System.Windows.Forms.TextBox();
             this.txtServerTarget = new System.Windows.Forms.TextBox();
-            this.lblVersion = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btnBackup = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -123,6 +124,8 @@
             // 
             // btnClose
             // 
+            this.btnClose.BackgroundImage = global::SQLCloneToGo.Properties.Resources.logout;
+            this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnClose.Location = new System.Drawing.Point(6, 3);
             this.btnClose.Name = "btnClose";
@@ -134,6 +137,8 @@
             // 
             // btnClear
             // 
+            this.btnClear.BackgroundImage = global::SQLCloneToGo.Properties.Resources.browser_2;
+            this.btnClear.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnClear.Location = new System.Drawing.Point(461, 3);
             this.btnClear.Name = "btnClear";
@@ -145,7 +150,10 @@
             // 
             // btnGo
             // 
+            this.btnGo.BackgroundImage = global::SQLCloneToGo.Properties.Resources.technology;
+            this.btnGo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnGo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnGo.Location = new System.Drawing.Point(597, 3);
             this.btnGo.Name = "btnGo";
             this.btnGo.Size = new System.Drawing.Size(117, 72);
@@ -168,7 +176,7 @@
             // 
             this.txtTargetDB.Location = new System.Drawing.Point(592, 31);
             this.txtTargetDB.Name = "txtTargetDB";
-            this.txtTargetDB.Size = new System.Drawing.Size(178, 20);
+            this.txtTargetDB.Size = new System.Drawing.Size(150, 20);
             this.txtTargetDB.TabIndex = 1;
             this.txtTargetDB.Text = "zomorod722-1";
             this.txtTargetDB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -218,6 +226,13 @@
             this.lblSuccess.Size = new System.Drawing.Size(63, 17);
             this.lblSuccess.Text = "Success : 0";
             // 
+            // lblVersion
+            // 
+            this.lblVersion.ForeColor = System.Drawing.Color.Olive;
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.Size = new System.Drawing.Size(69, 17);
+            this.lblVersion.Text = "Version : 0.1";
+            // 
             // txtServerSrc
             // 
             this.txtServerSrc.Location = new System.Drawing.Point(408, 5);
@@ -238,18 +253,25 @@
             this.txtServerTarget.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtServerTarget.TextChanged += new System.EventHandler(this.txtServerTarget_TextChanged);
             // 
-            // lblVersion
+            // btnBackup
             // 
-            this.lblVersion.ForeColor = System.Drawing.Color.Olive;
-            this.lblVersion.Name = "lblVersion";
-            this.lblVersion.Size = new System.Drawing.Size(69, 17);
-            this.lblVersion.Text = "Version : 0.1";
+            this.btnBackup.BackgroundImage = global::SQLCloneToGo.Properties.Resources.circuit;
+            this.btnBackup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnBackup.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBackup.Location = new System.Drawing.Point(748, 31);
+            this.btnBackup.Name = "btnBackup";
+            this.btnBackup.Size = new System.Drawing.Size(21, 20);
+            this.btnBackup.TabIndex = 9;
+            this.btnBackup.Text = "...";
+            this.btnBackup.UseVisualStyleBackColor = true;
+            this.btnBackup.Click += new System.EventHandler(this.btnBackup_Click);
             // 
             // frmClone
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(775, 499);
+            this.Controls.Add(this.btnBackup);
             this.Controls.Add(this.txtServerTarget);
             this.Controls.Add(this.txtServerSrc);
             this.Controls.Add(this.linkMain);
@@ -302,6 +324,7 @@
         private System.Windows.Forms.TextBox txtServerSrc;
         private System.Windows.Forms.TextBox txtServerTarget;
         private System.Windows.Forms.ToolStripStatusLabel lblVersion;
+        private System.Windows.Forms.Button btnBackup;
     }
 }
 
