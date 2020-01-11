@@ -49,16 +49,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Models\SelectState.cs" />
     <Compile Include="frmClone.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmClone.Designer.cs">
       <DependentUpon>frmClone.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmList.Designer.cs">
+      <DependentUpon>frmList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmClone.resx">
       <DependentUpon>frmClone.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmList.resx">
+      <DependentUpon>frmList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -85,6 +95,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="circuit.ico" />
+    <None Include="Resources\sync-1.png" />
+    <None Include="Resources\cloud-computing.png" />
+    <None Include="Resources\download.png" />
+    <None Include="Resources\015-check.png" />
+    <None Include="Resources\pointer.png" />
     <None Include="Resources\technology1.png" />
     <None Include="Resources\network.png" />
     <None Include="Resources\browser-2.png" />

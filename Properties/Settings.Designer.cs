@@ -70,5 +70,17 @@ namespace SQLCloneToGo.Properties {
                 this["TargetServerName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("7.22")]
+        public string DBVersion {
+            get {
+                return ((string)(this["DBVersion"]));
+            }
+            set {
+                this["DBVersion"] = value;
+            }
+        }
     }
 }

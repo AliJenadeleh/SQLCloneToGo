@@ -14,5 +14,8 @@
     <Setting Name="TargetServerName" Type="System.String" Scope="User">
       <Value Profile="(Default)">.\ZOMOROD</Value>
     </Setting>
+    <Setting Name="DBVersion" Type="System.String" Scope="User">
+      <Value Profile="(Default)">7.22</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

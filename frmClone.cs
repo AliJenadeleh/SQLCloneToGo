@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
@@ -13,12 +14,13 @@ namespace SQLCloneToGo
 {
     public partial class frmClone : Form
     {
-        private const string VERSION = "0.1";
+        private const string VERSION = "1.0 LST";
         private const string AJLINK = "https://alijenadeleh.ir";
         private const string SUCCESSTEMPLATE = "Success : {0} ";
         private const string FAILTEMPLATE = "Failed : {0} ";
         private const string SCRIPTALLDATA = "select * from [{0}]";
-        private const string SCRIPTCLEARTABLE = "delete from [{0}]";
+        private const string SCRIPTCLEARTABLE = "truncate table [{0}] ;";
+        private const string SCRIPTDBVERSION = "update [tblControlPanel] set [fldVersion]='{0}' ";
         private const string BACKUPTEMPLATE =
 @"USE [{0}];
 
@@ -33,7 +35,7 @@ TO DISK = '{1}'
 FROM [{0}].INFORMATION_SCHEMA.TABLES 
 WHERE TABLE_TYPE = 'BASE TABLE'";
         
-        private DataTable SourceTables;
+        private DataTable SourceTables,ServersTable;
         private List<int> ErrorIndex;
 
         
@@ -166,12 +168,14 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
 
             SqlCommand cmdSrc = new SqlCommand("",CnnSrc)
                        , cmdTarget = new SqlCommand("",CnnTarget);
-
+            bool errorTest;
             foreach(string tableName in Tables)
             {
-               
 
-                listOutput.Items.Add($"{tableName} copy start.");
+
+                    listOutput.Items.Add($"{tableName} copy start.");
+
+
                 cmdSrc.CommandText = string.Format(SCRIPTALLDATA, tableName);
                 datSrc.SelectCommand = cmdSrc;
                 tblSrc = new DataTable();
@@ -180,7 +184,7 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
                 {
                     cmdTarget.CommandText = string.Format(SCRIPTCLEARTABLE, tableName);
                     cmdTarget.ExecuteNonQuery();
-
+                    errorTest = false;
                     if (tblSrc.Rows.Count > 0)
                     {
 
@@ -188,24 +192,67 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
                         float inc = columns.Count() / 100;
                         float prog = 0f;
                         RowCount = 0;
-                        
 
+                        string cmd = "";
                         foreach (DataRow row in tblSrc.Rows)
                         {
-                            cmdTarget.CommandText = $" insert into {tableName}({columns}) select {RowToString(row)} ";
-                            cmdTarget.ExecuteNonQuery();
-                            prog += inc;
-                            progressMain.ProgressBar.Value = (int)prog;
+                            cmd = $" insert into {tableName}({columns}) select {RowToString(row)} ; ";
+                            try
+                            {
+                                cmdTarget.CommandText = cmd;
+                                cmdTarget.ExecuteNonQuery();
+                                if(chkVerbose.Checked)
+                                        listOutput.Items.Add($"++++++ {cmd} ok.");
+
+                            }
+                            catch(Exception exp)
+                            {
+
+                                 CIndex = listOutput.Items.Add($"{tableName} {RowCount} {exp.Message}.");
+                                 listOutput.Items.Add(cmd);
+
+                                if (!errorTest)
+                                {
+                                    Fail++;
+                                    lblFail.Text = string.Format(FAILTEMPLATE, Fail);                                 
+                                    errorTest = true;
+                                }
+                                if (CIndex != -1)
+                                    ErrorIndex.Add(CIndex);
+                                
+                            }
                             RowCount++;
+                            Application.DoEvents();
                         }
+                        prog += inc;
                         Success++;
+
+                            progressMain.ProgressBar.Value = (int)prog;
+                            lblSuccess.Text = string.Format(SUCCESSTEMPLATE, Success);
+
                     }
                     listOutput.Items.Add($"{tableName} {RowCount} rows copied done.");
                 }catch(Exception ex)
                 {
-                    CIndex = listOutput.Items.Add($"{tableName} copy failed.");
-                    listOutput.Items.Add(ex.Message);
+                    CIndex = listOutput.Items.Add($"{tableName} copy failed. {ex.Message}");
                     Fail++;
+                    if (CIndex != -1)
+                        ErrorIndex.Add(CIndex);
+                }
+            }
+
+
+            if (chkLastVersion.Checked)
+            {
+                try
+                {
+                    cmdTarget.CommandText = string.Format(SCRIPTDBVERSION, txtDbVersion.Text);
+                    cmdTarget.ExecuteNonQuery();
+                    listOutput.Items.Add($"DB Version set to {txtDbVersion.Text} .");
+                }
+                catch
+                {
+                    CIndex = listOutput.Items.Add($"DB Version set to {txtDbVersion.Text} failed.");
                     if (CIndex != -1)
                         ErrorIndex.Add(CIndex);
                 }
@@ -265,15 +312,16 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
             {
                 if(row[i].GetType() == Type.GetType("System.String")){
                     tmp = $"'{row[i].ToString()}'";
-                }else if(row[i].GetType() == Type.GetType("System.String")){
+                }else if(row[i].GetType() == Type.GetType("System.DateTime")){
                     tmp = $"'{row[i].ToString()}'";
                 }
                 else{
                     tmp = row[i].ToString();
+                    if (string.IsNullOrEmpty(tmp))
+                        tmp = "0";
                 }
                 
                 if (string.IsNullOrEmpty(tmp)) tmp = "null";
-
                     if (test)
                         res.Append($",{tmp}");
                     else
@@ -369,6 +417,7 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
                 p.TargetDBName = txtTargetDB.Text;
                 p.SrcServername = txtServerSrc.Text;
                 p.TargetServerName = txtServerTarget.Text;
+                p.DBVersion = txtDbVersion.Text;
                 p.Save();
             }
             catch { }
@@ -376,6 +425,8 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
 
         private void frmClone_Load(object sender, EventArgs e)
         {
+            
+            lblVersion.Text = VERSION;
             var p = new Properties.Settings();
             try
             {
@@ -383,6 +434,7 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
                 txtTargetDB.Text = p.TargetDBName;
                 txtServerSrc.Text = p.SrcServername;
                 txtServerTarget.Text = p.TargetServerName;
+                txtDbVersion.Text = p.DBVersion;
                 ReLoadConnectionString();
             }
             catch { }
@@ -405,24 +457,88 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
 
         private void listOutput_DrawItem(object sender, DrawItemEventArgs e)
         {
-            if(e.Index  >= 0 && ErrorIndex != null && ErrorIndex.Count > 0 && ErrorIndex.IndexOf(e.Index) != -1)
+            if (e.Index >= 0)
             {
-                e = new DrawItemEventArgs(e.Graphics,
-                                  e.Font,
-                                  e.Bounds,
-                                  e.Index,
-                                  e.State ,// ^ DrawItemState.Selected,
-                                  e.ForeColor,
-                                  Color.Yellow);//Choose the color
+                if (ErrorIndex != null && ErrorIndex.Count > 0 && ErrorIndex.IndexOf(e.Index) != -1)
+                {
+                    e = new DrawItemEventArgs(e.Graphics,
+                                      e.Font,
+                                      e.Bounds,
+                                      e.Index,
+                                      e.State,// ^ DrawItemState.Selected,
+                                      e.ForeColor,
+                                      Color.Yellow);//Choose the color
 
 
+                }
+
+                e.DrawBackground();
+                // Draw the current item text
+                e.Graphics.DrawString(listOutput.Items[e.Index].ToString(), e.Font, Brushes.Black, e.Bounds, StringFormat.GenericDefault);
+                // If the ListBox has focus, draw a focus rectangle around the selected item.
+                e.DrawFocusRectangle();
             }
+        }
 
-            e.DrawBackground();
-            // Draw the current item text
-            e.Graphics.DrawString(listOutput.Items[e.Index].ToString(), e.Font, Brushes.Black, e.Bounds, StringFormat.GenericDefault);
-            // If the ListBox has focus, draw a focus rectangle around the selected item.
-            e.DrawFocusRectangle();
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var frm = new Forms.frmList();
+            if (frm.SafeShow(Classes.Models.SelectState.ServerList) == DialogResult.OK)
+            {
+                txtServerSrc.Text = frm.SelectedItem;
+            }
+            
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var frm = new Forms.frmList();
+            if (frm.SafeShow(Classes.Models.SelectState.ServerList) == DialogResult.OK)
+            {
+                txtServerTarget.Text = frm.SelectedItem;
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var frm = new Forms.frmList();
+            if (frm.SafeShow(Classes.Models.SelectState.DbList, txtServerSrc.Text) == DialogResult.OK)
+            {
+                txtSrcDB.Text = frm.SelectedItem;
+            }
+        }
+
+        private void listOutput_DoubleClick(object sender, EventArgs e)
+        {
+            if(listOutput.SelectedIndex > 0)
+            {
+                Clipboard.SetText(listOutput.SelectedItem.ToString());
+                MessageBox.Show("Selected Item copied to clipboard.");
+            }
+        }
+
+        private void chkLastVersion_CheckedChanged(object sender, EventArgs e)
+        {
+            bool tst = (sender as CheckBox).Checked;
+            txtDbVersion.Enabled = tst;
+            if (tst)
+                txtDbVersion.Focus();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var frm = new Forms.frmList();
+            if (frm.SafeShow(Classes.Models.SelectState.DbList, txtServerTarget.Text) == DialogResult.OK)
+            {
+                txtTargetDB.Text = frm.SelectedItem;
+            }
+        }
+
+        private void txtDbVersion_KeyPress(object sender, KeyPressEventArgs e)
+        {
+           if(e.KeyChar != (char)Keys.Back && e.KeyChar != '.' 
+                                    && (e.KeyChar > '9' || e.KeyChar < '0'))
+                                                                    e.KeyChar = '\0';
         }
 
         private async void btnBackup_Click(object sender, EventArgs e)
