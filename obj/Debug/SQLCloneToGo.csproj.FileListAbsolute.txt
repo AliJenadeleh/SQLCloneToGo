@@ -16,3 +16,4 @@ D:\Projects\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.Properties.Resource
 D:\Projects\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.csproj.GenerateResource.cache
 D:\Projects\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.exe
 D:\Projects\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.pdb
+D:\Projects\SQLCloneToGo\SQLCloneToGo\obj\Debug\SQLCloneToGo.csprojAssemblyReference.cache

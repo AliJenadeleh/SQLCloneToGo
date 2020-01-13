@@ -36,6 +36,23 @@ namespace SQLCloneToGo.Forms
                 if(row[SERVERFIELD].ToString() == myServer)
                     listMain.Items.Add($"{row[SERVERFIELD].ToString()}\\{row[INSTANCEFIELD]}");
         }
+
+        private void LoadDB()
+        {
+            if (DBTable == null)
+            {
+                string cnnStr = $"Data Source={ServerName}; Integrated Security=True;";
+                var cnn = new SqlConnection(cnnStr);
+                var cmd = new SqlCommand(DBSCRIPT, cnn);
+                var dat = new SqlDataAdapter(cmd);
+                DBTable = new DataTable();
+                dat.Fill(DBTable);
+                cnn.Close();
+            }
+
+            foreach (DataRow row in DBTable.Rows)
+                listMain.Items.Add(row[0].ToString());
+        }
         private void LoadItems()
         {
             listMain.Items.Clear();
@@ -44,19 +61,7 @@ namespace SQLCloneToGo.Forms
                 LoadInstances();
             }else if(state == SelectState.DbList)
             {
-                if (DBTable == null)
-                {
-                    string cnnStr = $"Data Source={ServerName}; Integrated Security=True;";
-                    var cnn = new SqlConnection(cnnStr);
-                    var cmd = new SqlCommand(DBSCRIPT, cnn);
-                    var dat = new SqlDataAdapter(cmd);
-                    DBTable = new DataTable();
-                    dat.Fill(DBTable);
-                    cnn.Close();
-                }
-
-                foreach (DataRow row in DBTable.Rows)
-                    listMain.Items.Add(row[0].ToString());
+                LoadDB();
             }
         }
 
@@ -96,6 +101,7 @@ namespace SQLCloneToGo.Forms
 
         private void btnGo_Click(object sender, EventArgs e)
         {
+           
             DoSelect();
         }
 

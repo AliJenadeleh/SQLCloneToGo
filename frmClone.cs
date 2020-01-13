@@ -184,13 +184,12 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
                 {
                     cmdTarget.CommandText = string.Format(SCRIPTCLEARTABLE, tableName);
                     cmdTarget.ExecuteNonQuery();
+                    listOutput.Items.Add($"{tableName} Cleared.");
                     errorTest = false;
                     if (tblSrc.Rows.Count > 0)
                     {
 
                         string columns = GetColumnName(tblSrc);
-                        float inc = columns.Count() / 100;
-                        float prog = 0f;
                         RowCount = 0;
 
                         string cmd = "";
@@ -224,10 +223,10 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
                             RowCount++;
                             Application.DoEvents();
                         }
-                        prog += inc;
+
                         Success++;
 
-                            progressMain.ProgressBar.Value = (int)prog;
+                            
                             lblSuccess.Text = string.Format(SUCCESSTEMPLATE, Success);
 
                     }
@@ -351,6 +350,11 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
 
         private async void btnGo_Click(object sender, EventArgs e)
         {
+            progressMain.Value = 0;
+            timer1.Start();
+            btnClear.Enabled =
+             btnClose.Enabled =
+                btnBackup.Enabled = 
             (sender as Button).Enabled = false;
             txtSrcDB.Enabled = false;
             txtTargetDB.Enabled = false;
@@ -383,12 +387,18 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
             }
 
             int inx = listOutput.Items.Add($"Copy done {DateTime.Now.ToString()}");
-            
-            (sender as Button).Enabled = true;
+           
             txtSrcDB.Enabled = true;
             txtTargetDB.Enabled = true;
             txtServerSrc.Enabled = true;
             txtServerTarget.Enabled = true;
+            progressMain.Value = 100;
+            timer1.Stop();
+            MessageBox.Show("Operation done successfuly");
+            btnClear.Enabled =
+           btnClose.Enabled =
+           btnBackup.Enabled =
+           (sender as Button).Enabled = true;
         }
 
         private void btnClear_Click(object sender, EventArgs e)
@@ -425,7 +435,6 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
 
         private void frmClone_Load(object sender, EventArgs e)
         {
-            
             lblVersion.Text = VERSION;
             var p = new Properties.Settings();
             try
@@ -539,6 +548,15 @@ WHERE TABLE_TYPE = 'BASE TABLE'";
            if(e.KeyChar != (char)Keys.Back && e.KeyChar != '.' 
                                     && (e.KeyChar > '9' || e.KeyChar < '0'))
                                                                     e.KeyChar = '\0';
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (progressMain.Value < 100)
+                progressMain.Value += 10;
+            else
+                progressMain.Value = 0;
+            Application.DoEvents();
         }
 
         private async void btnBackup_Click(object sender, EventArgs e)

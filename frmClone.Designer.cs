@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmClone));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -57,6 +58,7 @@
             this.chkVerbose = new System.Windows.Forms.CheckBox();
             this.chkLastVersion = new System.Windows.Forms.CheckBox();
             this.txtDbVersion = new System.Windows.Forms.TextBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -362,6 +364,11 @@
             this.txtDbVersion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtDbVersion.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtDbVersion_KeyPress);
             // 
+            // timer1
+            // 
+            this.timer1.Interval = 250;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // frmClone
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -434,6 +441,7 @@
         private System.Windows.Forms.CheckBox chkVerbose;
         private System.Windows.Forms.CheckBox chkLastVersion;
         private System.Windows.Forms.TextBox txtDbVersion;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 
